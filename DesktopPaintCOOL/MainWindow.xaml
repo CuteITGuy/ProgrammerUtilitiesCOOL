@@ -3,14 +3,94 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" WindowState="Maximized" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}"
         Topmost="True" ShowInTaskbar="False">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
+        <Thickness x:Key="MarginNormal">4</Thickness>
+
+        <Style x:Key="StyleCommon" TargetType="FrameworkElement">
+            <Setter Property="Margin" Value="{StaticResource MarginNormal}" />
+        </Style>
+
+        <Style x:Key="StyleButtonCommon" TargetType="ButtonBase" BasedOn="{StaticResource StyleCommon}">
+            <Setter Property="MinWidth" Value="80" />
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource StyleButtonCommon}" />
+
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource StyleButtonCommon}" />
+    </Window.Resources>
+
     <Grid>
-        <InkCanvas x:Name="inkCanvasMain"
-                   UseCustomCursor="True" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
         
-        <Rectangle x:Name="rectangle" Fill="Blue" Height="60" VerticalAlignment="Top" Visibility="Collapsed"
-                   MouseLeave="Rectangle_OnMouseLeave"></Rectangle>
+        <Canvas x:Name="blkTop" Grid.Row="0"></Canvas>
+        
+        <InkCanvas x:Name="icvMain" Grid.Row="1" UseCustomCursor="True"
+                   Visibility="{Binding ElementName=cmdToggle, Path=IsChecked, Converter={StaticResource VisibilityConverter}}">
+            <InkCanvas.DefaultDrawingAttributes>
+                <DrawingAttributes x:Name="draInk" Color="DarkOrchid" Width="8" Height="8" />
+            </InkCanvas.DefaultDrawingAttributes>
+        </InkCanvas>
+
+        <ToolBar x:Name="tbrMain" Grid.Row="0" Grid.RowSpan="2"
+                 VerticalAlignment="Top" Visibility="Collapsed"
+                 MouseLeave="TbrMain_OnMouseLeave">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource StyleCommon}"
+                           Text="Ink color" />
+
+                <xctk:ColorPicker Grid.Row="1" Grid.Column="0" Style="{StaticResource StyleCommon}"
+                                  SelectedColor="{Binding ElementName=draInk, Path=Color}" />
+
+                <TextBlock Grid.Row="0" Grid.Column="1" Margin="{StaticResource MarginNormal}"
+                           Text="Ink width" />
+
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Style="{StaticResource StyleCommon}"
+                                    Value="{Binding ElementName=draInk, Path=Width}" />
+
+                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource StyleCommon}"
+                           Text="Ink height" />
+
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="2" Style="{StaticResource StyleCommon}"
+                                    Value="{Binding ElementName=draInk, Path=Height}" />
+
+                <Button x:Name="cmdSave" Grid.Row="1" Grid.Column="3"
+                        Content="Save" Click="CmdSave_OnClick" />
+
+                <Button x:Name="cmdOpen" Grid.Row="1" Grid.Column="4"
+                        Content="Open" Click="CmdOpen_OnClick" />
+
+                <ToggleButton x:Name="cmdToggle" Grid.Row="1" Grid.Column="5"
+                              Content="Show" IsChecked="True" />
+
+                <Button x:Name="cmdClose" Grid.Row="1" Grid.Column="6"
+                        Content="Close" Click="CmdClose_OnClick" />
+            </Grid>
+        </ToolBar>
     </Grid>
 </Window>

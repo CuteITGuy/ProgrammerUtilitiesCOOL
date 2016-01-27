@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using ImageHandlers;
 
 
 namespace DesktopPaintCOOL
@@ -14,14 +15,15 @@ namespace DesktopPaintCOOL
         #endregion
 
 
-        #region  Constructors & Destructors
+        #region  Constructors & Destructor
         public MainWindow()
         {
             InitializeComponent();
             var curPath = Path.Combine(Environment.CurrentDirectory, "crayon.cur");
             var cursor = new Cursor(curPath);
-            inkCanvasMain.Background = _background;
-            inkCanvasMain.Cursor = cursor;
+            blkTop.Background = _background;
+            icvMain.Background = _background;
+            icvMain.Cursor = cursor;
         }
         #endregion
 
@@ -33,7 +35,7 @@ namespace DesktopPaintCOOL
             {
                 case Key.LeftCtrl:
                 case Key.RightCtrl:
-                    inkCanvasMain.Background = null;
+                    icvMain.Background = null;
                     break;
             }
             base.OnKeyDown(e);
@@ -45,7 +47,7 @@ namespace DesktopPaintCOOL
             {
                 case Key.LeftCtrl:
                 case Key.RightCtrl:
-                    inkCanvasMain.Background = _background;
+                    icvMain.Background = _background;
                     break;
             }
             base.OnKeyUp(e);
@@ -56,16 +58,39 @@ namespace DesktopPaintCOOL
             var mouse = e.GetPosition(this);
             if (mouse.Y < 10)
             {
-                rectangle.Visibility = Visibility.Visible;
+                tbrMain.Visibility = Visibility.Visible;
             }
-            base.OnMouseMove(e);
+            OnMouseMove(e);
         }
         #endregion
 
 
-        private void Rectangle_OnMouseLeave(object sender, MouseEventArgs e)
+        #region Event Handlers
+        private void CmdClose_OnClick(object sender, RoutedEventArgs e)
         {
-            rectangle.Visibility = Visibility.Collapsed;
+            Close();
         }
+
+        private void CmdOpen_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImageFileHander.LoadImage(icvMain);
+        }
+
+        private void CmdSave_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImageFileHander.SaveToImage(icvMain);
+        }
+
+        private void TbrMain_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            tbrMain.Visibility = Visibility.Collapsed;
+        }
+        #endregion
     }
 }
+
+
+//TODO: buttons Close, Minimize, Maximize, Save, Open, Save As
+//TODO: Drawing patterns: circle, rectangle, triangle, stars, line, polygon
+//TODO: eraser
+//TODO: save strokes
